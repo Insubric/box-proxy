@@ -1,0 +1,9 @@
+{
+    "port": 8888,
+    "apps": {
+        "wssweb": "http://localhost:8080",
+        "ips": "http://localhost:8081"
+    },
+    "default_app": "wssweb",
+    "log_level": "debug"
+}

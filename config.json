@@ -1,5 +1,5 @@
 {
-    "port": 8888,
+    "port": 8880,
     "apps": {
         "wssweb": "http://localhost:8080",
         "ips": "http://localhost:8081"

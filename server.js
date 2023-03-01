@@ -26,16 +26,9 @@ for (let [name, url] of Object.entries(config.apps)) {
 
 }
 
-// router.all(`/*`, createProxyMiddleware({
-//     target: config.apps[config.default_app],
-//     changeOrigin: true,
-//     logLevel: config.log_level,
-//     onError(err, req, res) {
-//       console.error(err);
-//     }
-//   }));
-
-
+app.get('/', (req, res) => {
+          res.redirect(303, `/${config.default_app}`);      
+})
 
 app.listen(config.port, () => {
     console.log(`Box proxy listening on port ${config.port}`)

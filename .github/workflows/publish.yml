@@ -14,8 +14,7 @@ jobs:
       - uses: actions/checkout@v1      
       - uses: docker/build-push-action@v1
         with:
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-          registry: ghcr.io
+          username: minettiandrea
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
           tag_with_ref: true
 

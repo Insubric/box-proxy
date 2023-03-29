@@ -16,5 +16,6 @@ jobs:
         with:
           username: minettiandrea
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+          repository: minettiandrea/box-proxy
           tag_with_ref: true
 

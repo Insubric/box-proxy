@@ -1,0 +1,21 @@
+name: Publish
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  push:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1      
+      - uses: docker/build-push-action@v1
+        with:
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: ghcr.io
+          tag_with_ref: true
+

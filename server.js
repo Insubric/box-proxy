@@ -1,5 +1,6 @@
 const express = require('express')
 const { createProxyMiddleware } = require('http-proxy-middleware');
+const basicAuth = require('express-basic-auth')
 
 const config = require('./config.json');
 
@@ -7,13 +8,13 @@ const app = express()
 
 
 
-for (let [name, url] of Object.entries(config.apps)) {
-    console.log(`Installed app /${name} => ${url}`)
+for (let [name, service] of Object.entries(config.apps)) {
+    console.log(`Installed app /${name} => ${service.target}`)
     const pathRewrite = {}
     pathRewrite['^/' + name] = ''
     const router = express.Router();
     router.all(`/*`, createProxyMiddleware({
-        target: url,
+        target: service.target,
         changeOrigin: true,
         logLevel: config.log_level,
         pathRewrite: pathRewrite,
@@ -21,8 +22,14 @@ for (let [name, url] of Object.entries(config.apps)) {
           console.error(err);
         }
       }));
-    
-    app.use(`/${name}`, router);
+    if(service.users) {
+        app.use(`/${name}`,basicAuth({
+            users: service.users,
+            challenge: true
+        }),router)
+    } else {
+        app.use(`/${name}`, router);
+    }
 
 }
 

@@ -7,12 +7,15 @@ const config = require('./config.json');
 const app = express()
 
 const hasRoot = Object.keys(config.apps).includes("/")
+const base = config.base ?  `^/${config.base}/` : '^/'
 
 for (let [name, service] of Object.entries(config.apps)) {
     console.log(`Installed app /${name} => ${service.target}`)
     const pathRewrite = {}
     if(name !== "/")
-        pathRewrite['^/' + name] = ''
+        pathRewrite[base + name] = ''
+    else
+        pathRewrite[base] = ''
     const router = express.Router();
     router.all(`/*`, createProxyMiddleware({
         target: service.target,

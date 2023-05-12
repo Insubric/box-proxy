@@ -2,9 +2,9 @@
     "port": 8880,
     "apps": {
         "wssweb": { "target": "http://localhost:8080"},
-        "geoserver": {
+        "/": {
             "target": "http://localhost:9083/geoserver/swissfire",
-            "users": {"test": "test"}
+            "users": {"ignis": "ignis"}
         },
         "ips": { "target": "http://localhost:8081" }
     },

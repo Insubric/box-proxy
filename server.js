@@ -6,12 +6,13 @@ const config = require('./config.json');
 
 const app = express()
 
-
+const hasRoot = Object.keys(config.apps).includes("/")
 
 for (let [name, service] of Object.entries(config.apps)) {
     console.log(`Installed app /${name} => ${service.target}`)
     const pathRewrite = {}
-    pathRewrite['^/' + name] = ''
+    if(name !== "/")
+        pathRewrite['^/' + name] = ''
     const router = express.Router();
     router.all(`/*`, createProxyMiddleware({
         target: service.target,
@@ -22,20 +23,25 @@ for (let [name, service] of Object.entries(config.apps)) {
           console.error(err);
         }
       }));
+
+    const url = name === "/" ? "/" : `/${name}`
+
     if(service.users) {
-        app.use(`/${name}`,basicAuth({
+        app.use(url,basicAuth({
             users: service.users,
             challenge: true
         }),router)
     } else {
-        app.use(`/${name}`, router);
+        app.use(url, router);
     }
 
 }
 
-app.get('/', (req, res) => {
-          res.redirect(303, `/${config.default_app}`);      
-})
+if(!hasRoot) {
+    app.get('/', (req, res) => {
+        res.redirect(303, `/${config.default_app}`);
+    })
+}
 
 app.listen(config.port, () => {
     console.log(`Box proxy listening on port ${config.port}`)

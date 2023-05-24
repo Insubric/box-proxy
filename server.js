@@ -40,7 +40,7 @@ for (let [name, service] of Object.entries(config.apps)) {
 
 }
 
-const base = config.base ?  `${config.base}/` : ''
+const base = config.base ?  config.base : ''
 
 if(!hasRoot) {
     app.get('/', (req, res) => {

@@ -23,6 +23,7 @@ for (let [name, service] of Object.entries(config.apps)) {
         changeOrigin: true,
         xfwd: true,
         autoRewrite: true,
+        hostRewrite: true,
         logLevel: config.log_level,
         pathRewrite: pathRewrite,
         onError(err, req, res) {
@@ -30,6 +31,11 @@ for (let [name, service] of Object.entries(config.apps)) {
         },
         onProxyReq: (proxyReq, req, res) => {
             proxyReq.setHeader('X-Forwarded-Path', `${base}/${name}`);
+        },
+        onProxyRes: (proxyRes, req, res) => {
+            if (proxyRes.headers.location && proxyRes.headers.location.startsWith("/")) { 
+                proxyRes.headers['location'] = `/${name}${proxyRes.headers.location}` 
+            }
         },
       }));
 

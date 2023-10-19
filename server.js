@@ -8,6 +8,7 @@ const app = express()
 
 const hasRoot = Object.keys(config.apps).includes("/")
 
+const base = config.base ?  config.base : ''
 
 for (let [name, service] of Object.entries(config.apps)) {
     console.log(`Installed app /${name} => ${service.target}`)
@@ -20,11 +21,16 @@ for (let [name, service] of Object.entries(config.apps)) {
     router.all(`/*`, createProxyMiddleware({
         target: service.target,
         changeOrigin: true,
+        xfwd: true,
+        autoRewrite: true,
         logLevel: config.log_level,
         pathRewrite: pathRewrite,
         onError(err, req, res) {
           console.error(err);
-        }
+        },
+        onProxyReq: (proxyReq, req, res) => {
+            proxyReq.setHeader('X-Forwarded-Path', `${base}/${name}`);
+        },
       }));
 
     const url = name === "/" ? "/" : `/${name}`
@@ -40,7 +46,7 @@ for (let [name, service] of Object.entries(config.apps)) {
 
 }
 
-const base = config.base ?  config.base : ''
+
 
 if(!hasRoot) {
     app.get('/', (req, res) => {

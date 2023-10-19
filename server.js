@@ -34,7 +34,11 @@ for (let [name, service] of Object.entries(config.apps)) {
         },
         onProxyRes: (proxyRes, req, res) => {
             if (proxyRes.headers.location && proxyRes.headers.location.startsWith("/")) { 
-                proxyRes.headers['location'] = `/${name}${proxyRes.headers.location}` 
+                if (proxyRes.headers.location.startsWith(`/${name}`)) {
+                    proxyRes.headers['location'] = `${base}${proxyRes.headers.location}`
+                } else {
+                    proxyRes.headers['location'] = `${base}/${name}${proxyRes.headers.location}`
+                }
             }
         },
       }));

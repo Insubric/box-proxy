@@ -1,6 +1,7 @@
 const express = require('express')
 const { createProxyMiddleware } = require('http-proxy-middleware');
 const basicAuth = require('express-basic-auth')
+const cors = require('cors');
 
 const config = require('./config.json');
 
@@ -50,6 +51,8 @@ for (let [name, service] of Object.entries(config.apps)) {
             users: service.users,
             challenge: true
         }),router)
+    } else if(service.cors) {
+        app.use(url, cors(), router);
     } else {
         app.use(url, router);
     }

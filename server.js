@@ -18,6 +18,10 @@ for (let [name, service] of Object.entries(config.apps)) {
         pathRewrite['^/' + name] = ''
     else
         pathRewrite['^/'] = ''
+
+    const url = name === "/" ? "/" : `/${name}`
+    
+
     const router = express.Router();
     router.all(`/*`, createProxyMiddleware({
         target: service.target,
@@ -42,9 +46,10 @@ for (let [name, service] of Object.entries(config.apps)) {
                 }
             }
         },
+        cookiePathRewrite: service.cookiePathRewrite
       }));
 
-    const url = name === "/" ? "/" : `/${name}`
+    
 
     if(service.users) {
         app.use(url,basicAuth({

@@ -36,6 +36,7 @@ for (let [name, service] of Object.entries(config.apps)) {
         },
         onProxyReq: (proxyReq, req, res) => {
             proxyReq.setHeader('X-Forwarded-Path', `${base}/${name}`);
+            proxyReq.setHeader('HTTP_X_FORWARDED_URI', `${base}/${name}`);
         },
         onProxyRes: (proxyRes, req, res) => {
             if (proxyRes.headers.location && proxyRes.headers.location.startsWith("/")) { 
